@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="container">
+        <h1>Crisis Watch</h1>
         <form id="login-form">
             <h2>Login</h2>
             <div class="input-group">
@@ -18,7 +19,7 @@
                 <label for="login-password">Password</label>
                 <input type="password" id="login-password" required>
             </div>
-            <button type="submit">Login</button>
+            <button onclick="window.location.href='./landingpage.html'">Login</button>
             <p>Don't have an account? <a href="#" id="show-signup">Create one!</a></p>
         </form>
 
@@ -32,7 +33,8 @@
                 <label for="signup-password">Password</label>
                 <input type="password" id="signup-password" required>
             </div>
-            <button type="submit">Sign Up</button>
+            <button type="submit">
+                Sign Up</button>
             <p>Already have an account? <a href="#" id="show-login">Login here!</a></p>
         </form>
 
