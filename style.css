@@ -409,9 +409,9 @@ body#dashboard-page {
 #dashboard-page .status-select.status-active { color: var(--system-red); }
 #dashboard-page .status-select.status-pending { color: var(--system-orange); }
 #dashboard-page .status-select.status-resolved { color: var(--system-green); }
-#dashboard-page .priority-select.priority-High { color: var(--system-red); }
-#dashboard-page .priority-select.priority-Medium { color: var(--system-orange); }
-#dashboard-page .priority-select.priority-Low { color: var(--system-green); }
+#dashboard-page .priority-select.priority-high { color: var(--system-red); }
+#dashboard-page .priority-select.priority-medium { color: var(--system-orange); }
+#dashboard-page .priority-select.priority-low { color: var(--system-green); }
 
 
 /* --- Scoped Styles for Incident Page (shooting.html) --- */
