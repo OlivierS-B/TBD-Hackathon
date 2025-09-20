@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Feed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .map-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        .map-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .collapsible-content {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .collapsible-content.collapsed {
+            max-height: 0;
+        }
+        .toggle-icon {
+            transition: transform 0.3s ease-out;
+        }
+        .toggle-icon.rotate {
+            transform: rotate(180deg);
+        }
+        /* New styles for the chat box */
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            background-color: #f9fafb;
+        }
+        .chat-message {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #dbeafe;
+            align-self: flex-end;
+        }
+        .ai-message {
+            background-color: #e5e7eb;
+            align-self: flex-start;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex justify-center p-4 min-h-screen">
+    <div class="container bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-6">
+
+        <!-- Title Section -->
+        <h1 class="text-3xl md:text-4xl font-extrabold text-center text-gray-800 rounded-lg bg-gray-50 py-3">Live Feed</h1>
+
+        <!-- Live Video Section -->
+        <div class="space-y-4">
+            <div id="video-header" class="flex items-center justify-between cursor-pointer">
+                <h2 class="text-xl font-bold text-gray-700">Live Video</h2>
+                <svg id="video-toggle" class="toggle-icon w-6 h-6 text-gray-500 rotate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+            <div id="video-content" class="collapsible-content collapsed">
+                <div class="w-full bg-black rounded-lg overflow-hidden aspect-video">
+                    <img src="https://placehold.co/800x450/000000/FFFFFF?text=Live+Video+Feed" alt="Live Video Feed" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+
+        <!-- Location Section -->
+        <div class="space-y-4">
+            <div id="location-header" class="flex items-center justify-between cursor-pointer">
+                <h2 class="text-xl font-bold text-gray-700">Location: Owens Art Centre</h2>
+                <svg id="location-toggle" class="toggle-icon w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+            <div id="location-content" class="collapsible-content">
+                <div class="map-container shadow-md">
+                    <!-- Google Maps embed with a pin for Owens Art Centre -->
+                    <a href="https://www.google.com/maps/place/Owens+Art+Gallery/@45.8979393,-64.3644026,17z/data=!3m1!4b1!4m6!3m5!1s0x4b5e2825d14e05ef:0x673413867c29e1d8!8m2!3d45.8979393!4d-64.3644026!16s%2Fg%2F1tc7w373" target="_blank" rel="noopener noreferrer">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14168.047814421876!2d-64.36657904128522!3d45.89793933560599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4b5e2825d14e05ef%3A0x673413867c29e1d8!2sOwens%20Art%20Gallery!5e0!3m2!1sen!2sca!4v1716304040687!5m2!1sen!2sca"
+                            width="100%"
+                            height="450"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Map of Owens Art Centre">
+                        </iframe>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timer Section -->
+        <div class="space-y-4">
+            <div id="timer-header" class="flex items-center justify-between cursor-pointer">
+                <h2 class="text-xl font-bold text-gray-700">Time Since Reported</h2>
+                <svg id="timer-toggle" class="toggle-icon w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+            <div id="timer-content" class="collapsible-content">
+                <div class="bg-gray-50 text-center py-4 rounded-lg shadow-inner">
+                    <p id="timer" class="text-4xl font-mono font-bold text-gray-900">00:00:00</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Situation Text Box -->
+        <div class="space-y-4">
+            <div id="situation-header" class="flex items-center justify-between cursor-pointer">
+                <h2 class="text-xl font-bold text-gray-700">Situation</h2>
+                <svg id="situation-toggle" class="toggle-icon w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+            <div id="situation-content" class="collapsible-content">
+                <textarea
+                    id="situation-text"
+                    class="w-full h-32 p-4 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="Enter a description of the current situation here...">
+                </textarea>
+            </div>
+        </div>
+
+        <!-- New Query Box Section -->
+        <div class="space-y-4">
+            <h2 class="text-xl font-bold text-gray-700">Ask a Question</h2>
+            <div class="chat-box" id="chat-box">
+                <!-- Chat messages will be dynamically added here -->
+            </div>
+            <div class="flex space-x-2">
+                <input type="text" id="query-input" class="flex-1 p-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500" placeholder="Type your question here...">
+                <button id="send-button" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors">Send</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timerElement = document.getElementById('timer');
+            const startTime = Date.now();
+
+            function updateTimer() {
+                const elapsedTime = Date.now() - startTime;
+                const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+                const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+
+                const formatTime = (time) => String(time).padStart(2, '0');
+
+                timerElement.textContent = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+            }
+
+            // Update the timer every second
+            setInterval(updateTimer, 1000);
+
+            // Collapsible sections logic
+            const collapsibleHeaders = document.querySelectorAll('[id$="-header"]');
+
+            collapsibleHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const contentId = header.id.replace('-header', '-content');
+                    const toggleId = header.id.replace('-header', '-toggle');
+                    
+                    const content = document.getElementById(contentId);
+                    const toggleIcon = document.getElementById(toggleId);
+
+                    content.classList.toggle('collapsed');
+                    toggleIcon.classList.toggle('rotate');
+                });
+            });
+
+            // Chatbot logic
+            const chatBox = document.getElementById('chat-box');
+            const queryInput = document.getElementById('query-input');
+            const sendButton = document.getElementById('send-button');
+
+            function addMessage(message, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('chat-message', `${sender}-message`);
+                messageDiv.textContent = message;
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            async function sendMessage() {
+                const query = queryInput.value.trim();
+                if (query === '') return;
+
+                addMessage(query, 'user');
+                queryInput.value = '';
+                
+                // Simulate a response from a "database"
+                const data = {
+                    "What is the location?": "The incident is located at Owens Art Centre.",
+                    "What is the situation?": "The current situation is that a fire alarm was activated and all occupants have been evacuated.",
+                    "What is the status?": "The incident is being monitored. Emergency services are on their way."
+                };
+
+                const response = data[query] || "I'm sorry, I don't have information on that specific query. Please try asking a different question.";
+                addMessage(response, 'ai');
+            }
+
+            sendButton.addEventListener('click', sendMessage);
+            queryInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
