@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisis Watch</title>
+    <link rel="stylesheet" href="./landingpagestyle.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>Crisis Watch</h1>
+            <div class="subtitle">Emergency Response Command Center</div>
+        </div>
+
+        <div class="sidebar">
+            <div class="chat-section">
+                <div class="chat-title">🤖 AI Assistant</div>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot-message">
+                            Dashboard ready. How can I assist with emergency operations?
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Ask AI assistant..." autocomplete="off">
+                        <button class="send-btn" onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="dashboard-header">
+                <button class="action-btn active" onclick="filterCases('active')">Active Events</button>
+                <button class="action-btn" onclick="filterCases('current')">Current Location</button>
+                <button class="action-btn" onclick="filterCases('all')">All Cases</button>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-item stat-active">
+                    <div class="stat-number" id="activeCount">7</div>
+                    <div class="stat-label">Active Cases</div>
+                </div>
+                <div class="stat-item stat-pending">
+                    <div class="stat-number" id="pendingCount">3</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-item stat-resolved">
+                    <div class="stat-number" id="resolvedCount">24</div>
+                    <div class="stat-label">Resolved Today</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="responseTime">4.2</div>
+                    <div class="stat-label">Avg Response (min)</div>
+                </div>
+            </div>
+
+            <div class="cases-grid">
+                <div class="grid-header">
+                    <div>Case ID</div>
+                    <div>Description</div>
+                    <div>Status</div>
+                    <div>Priority</div>
+                    <div>Time</div>
+                </div>
+                
+                <div id="casesContainer">
+                    <div class="case-row" data-status="active">
+                        <div>
+                            <span class="case-type type-shooting">SHOOT</span>
+                            <br><small>001-2024</small>
+                        </div>
+                        <div>
+                            <strong>Multiple shots fired - Downtown District</strong>
+                            <br><small>123 Main Street, Units dispatched</small>
+                        </div>
+                        <div><span class="status-badge status-active">Active</span></div>
+                        <div><span class="priority-high">High</span></div>
+                        <div>2 min ago</div>
+                    </div>
+                    
+                    <div class="case-row" data-status="pending">
+                        <div>
+                            <span class="case-type type-robbery">ROB</span>
+                            <br><small>003-2024</small>
+                        </div>
+                        <div>
+                            <strong>Bank Robbery - First National</strong>
+                            <br><small>456 Bank Ave, Suspect fled scene</small>
+                        </div>
+                        <div><span class="status-badge status-pending">Pending</span></div>
+                        <div><span class="priority-high">High</span></div>
+                        <div>5 min ago</div>
+                    </div>
+                    
+                    <div class="case-row" data-status="active">
+                        <div>
+                            <span class="case-type type-domestic">DOM</span>
+                            <br><small>005-2024</small>
+                        </div>
+                        <div>
+                            <strong>Domestic disturbance - Residential</strong>
+                            <br><small>789 Oak Street, Wellness check requested</small>
+                        </div>
+                        <div><span class="status-badge status-active">Active</span></div>
+                        <div><span class="priority-medium">Medium</span></div>
+                        <div>8 min ago</div>
+                    </div>
+                    
+                    <div class="case-row" data-status="pending">
+                        <div>
+                            <span class="case-type type-shooting">SHOOT</span>
+                            <br><small>002-2024</small>
+                        </div>
+                        <div>
+                            <strong>Single gunshot reported - Industrial Area</strong>
+                            <br><small>321 Factory Rd, Investigating</small>
+                        </div>
+                        <div><span class="status-badge status-pending">Pending</span></div>
+                        <div><span class="priority-medium">Medium</span></div>
+                        <div>15 min ago</div>
+                    </div>
+                    
+                    <div class="case-row" data-status="resolved">
+                        <div>
+                            <span class="case-type type-robbery">ROB</span>
+                            <br><small>004-2024</small>
+                        </div>
+                        <div>
+                            <strong>Convenience Store - Suspect apprehended</strong>
+                            <br><small>654 Store Lane, Case closed</small>
+                        </div>
+                        <div><span class="status-badge status-resolved">Resolved</span></div>
+                        <div><span class="priority-low">Low</span></div>
+                        <div>1 hour ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chat functionality
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, 'user');
+                input.value = '';
+                
+                setTimeout(() => {
+                    generateBotResponse(message);
+                }, 1000);
+            }
+        }
+
+        function addMessage(text, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function generateBotResponse(userMessage) {
+            const responses = [
+                "Units dispatched to location. ETA 4 minutes.",
+                "Case logged. Priority level assessed as HIGH.",
+                "Emergency protocols activated. All units notified.",
+                "Location confirmed. Sending backup support.",
+                "Situation analysis complete. Recommendations sent.",
+                "Database updated. Cross-referencing similar incidents."
+            ];
+            
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            addMessage(randomResponse, 'bot');
+        }
+
+        // Filter functionality
+        function filterCases(filter) {
+            const buttons = document.querySelectorAll('.action-btn');
+            const rows = document.querySelectorAll('.case-row');
+            
+            // Update active button
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filter rows
+            rows.forEach(row => {
+                if (filter === 'all') {
+                    row.style.display = 'grid';
+                } else if (filter === 'active') {
+                    const status = row.dataset.status;
+                    row.style.display = (status === 'active') ? 'grid' : 'none';
+                } else if (filter === 'current') {
+                    // Show all for demo - in real app would filter by location
+                    row.style.display = 'grid';
+                }
+            });
+            
+            updateStats();
+        }
+
+        function updateStats() {
+            const visibleRows = document.querySelectorAll('.case-row[style*="grid"], .case-row:not([style])');
+            const activeCount = Array.from(visibleRows).filter(row => 
+                row.dataset.status === 'active'
+            ).length;
+            const pendingCount = Array.from(visibleRows).filter(row => 
+                row.dataset.status === 'pending'
+            ).length;
+            
+            document.getElementById('activeCount').textContent = activeCount;
+            document.getElementById('pendingCount').textContent = pendingCount;
+        }
+
+        // Handle Enter key in chat
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Update case times periodically
+        function updateCaseTimes() {
+            const timeElements = document.querySelectorAll('.case-row > div:last-child');
+            timeElements.forEach(element => {
+                const currentText = element.textContent;
+                if (currentText.includes('min ago')) {
+                    const minutes = parseInt(currentText);
+                    if (!isNaN(minutes) && minutes < 60) {
+                        element.textContent = `${minutes + 1} min ago`;
+                    }
+                }
+            });
+        }
+
+        setInterval(updateCaseTimes, 60000);
+
+        // Add click interactions
+        document.querySelectorAll('.case-row').forEach(row => {
+            row.addEventListener('click', function() {
+                this.style.background = '#e3f2fd';
+                setTimeout(() => {
+                    this.style.background = '';
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
