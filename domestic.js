@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const data = await response.json();
         
-        // Access the "shooting" data and sort it
-        initialFeedData = data.shooting.initialFeed.sort((a, b) => b.time - a.time);
-        newEvents = data.shooting.newEvents;
+        // Access the "domestic" data and sort it
+        initialFeedData = data.domestic.initialFeed.sort((a, b) => b.time - a.time);
+        newEvents = data.domestic.newEvents;
 
     } catch (error) {
         console.error("Could not fetch feed data:", error);

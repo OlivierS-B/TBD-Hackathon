@@ -1,0 +1,31 @@
+{
+    "shooting": {
+      "initialFeed": [
+        { "time": 2, "title": "SECURITY ALERT TRIGGERED", "details": "Motion sensors activated in Gallery Wing B." },
+        { "time": 4, "title": "SUSPECT LEFT SCENE", "details": "Individual matching description spotted leaving north entrance." },
+        { "time": 1, "title": "BACKUP UNITS DISPATCHED", "details": "Additional patrol units en route to scene." },
+        { "time": 3, "title": "WITNESS STATEMENT RECEIVED", "details": "Visitor provided description of individual seen near exit." },
+        { "time": 0, "title": "INITIAL REPORT RECEIVED", "details": "Security staff reported suspicious activity in main gallery." }
+      ],
+      "newEvents": [
+        { "time": 15, "title": "PERIMETER ESTABLISHED", "details": "Units have secured all exits and entrances." },
+        { "time": 25, "title": "DRONE OVERWATCH LAUNCHED", "details": "Aerial surveillance is now active over the area." },
+        { "time": 35, "title": "COMMAND POST SET UP", "details": "Mobile command post operational at corner of Main & First." }
+      ]
+    },
+    "domestic": {
+      "initialFeed": [
+        { "time": 0, "title": "911 CALL RECEIVED", "details": "Caller reported loud shouting and items being thrown in a neighboring residence." },
+        { "time": 2, "title": "PATROL UNIT DISPATCHED", "details": "Unit 12B en route to 123 Maple Avenue, University Park." },
+        { "time": 6, "title": "UNIT ARRIVED ON SCENE", "details": "Unit 12B is on site. Reports no audible signs of distress from the exterior." },
+        { "time": 8, "title": "CONTACT MADE WITH RESIDENTS", "details": "Officers are inside speaking with the parties involved." },
+        { "time": 11, "title": "SITUATION APPEARS STABLE", "details": "No signs of physical altercation. Officers report the verbal argument has ceased." }
+      ],
+      "newEvents": [
+        { "time": 20, "title": "MEDIATION IN PROGRESS", "details": "Officers are mediating a resolution between both individuals." },
+        { "time": 35, "title": "SEPARATION PLAN AGREED", "details": "One party has voluntarily agreed to stay with a relative for the night." },
+        { "time": 45, "title": "RESOURCES PROVIDED", "details": "Officers provided both parties with domestic violence resource pamphlets." },
+        { "time": 55, "title": "UNIT CLEAR FROM SCENE", "details": "Unit 12B has cleared the scene. Situation resolved without arrest." }
+      ]
+    }
+  }
