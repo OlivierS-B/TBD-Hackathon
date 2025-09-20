@@ -48,12 +48,11 @@ body {
 
 /* --- Scoped Styles for Login Page (index.html) --- */
 
+/* Updated to simply center the loading message */
 body#login-page {
-    /* Adjusted to display multiple forms side-by-side */
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2rem; /* Adds space between the login and signup forms */
     height: 100vh;
     margin: 0;
     padding: 2rem;
@@ -147,7 +146,8 @@ body#dashboard-page {
 
 #dashboard-page .dashboard-container {
     display: grid;
-    grid-template-columns: 280px 1fr;
+    /* UPDATED: Changed from 280px 1fr to a 40%/60% ratio */
+    grid-template-columns: 40% 60%;
     grid-template-rows: auto 1fr;
     height: 100vh;
     gap: 0;
@@ -477,7 +477,7 @@ body#incident-page {
 #incident-page .container { display: flex; flex: 1; overflow: hidden; }
 
 #incident-page aside {
-    width: 40%; /* UPDATED: Changed from 360px to 40% */
+    width: 40%; 
     background: #1f2937;
     border-right: 1px solid #374151;
     overflow-y: auto;
