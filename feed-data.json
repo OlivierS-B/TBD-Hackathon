@@ -1,0 +1,14 @@
+{
+    "initialFeed": [
+      { "time": 2, "title": "SECURITY ALERT TRIGGERED", "details": "Motion sensors activated in Gallery Wing B." },
+      { "time": 4, "title": "SUSPECT LEFT SCENE", "details": "Individual matching description spotted leaving north entrance." },
+      { "time": 1, "title": "BACKUP UNITS DISPATCHED", "details": "Additional patrol units en route to scene." },
+      { "time": 3, "title": "WITNESS STATEMENT RECEIVED", "details": "Visitor provided description of individual seen near exit." },
+      { "time": 0, "title": "INITIAL REPORT RECEIVED", "details": "Security staff reported suspicious activity in main gallery." }
+    ],
+    "newEvents": [
+      { "time": 15, "title": "PERIMETER ESTABLISHED", "details": "Units have secured all exits and entrances." },
+      { "time": 25, "title": "DRONE OVERWATCH LAUNCHED", "details": "Aerial surveillance is now active over the area." },
+      { "time": 35, "title": "COMMAND POST SET UP", "details": "Mobile command post operational at corner of Main & First." }
+    ]
+  }

@@ -1,22 +1,33 @@
-document.addEventListener('DOMContentLoaded', () => {
+// The listener's function is now 'async' to allow for 'await'
+document.addEventListener('DOMContentLoaded', async () => {
 
     // --- STATE & DATA ---
     const startTime = new Date();
-    const initialFeedData = [
-      { time: 2, title: "SECURITY ALERT TRIGGERED", details: "Motion sensors activated in Gallery Wing B." },
-      { time: 4, title: "SUSPECT LEFT SCENE", details: "Individual matching description spotted leaving north entrance." },
-      { time: 1, title: "BACKUP UNITS DISPATCHED", details: "Additional patrol units en route to scene." },
-      { time: 3, title: "WITNESS STATEMENT RECEIVED", details: "Visitor provided description of individual seen near exit." },
-      { time: 0, title: "INITIAL REPORT RECEIVED", details: "Security staff reported suspicious activity in main gallery." },
-    ].sort((a, b) => b.time - a.time); // Sort data chronologically descending
-  
-    const newEvents = [
-      { time: 15, title: "PERIMETER ESTABLISHED", details: "Units have secured all exits and entrances." },
-      { time: 25, title: "DRONE OVERWATCH LAUNCHED", details: "Aerial surveillance is now active over the area." },
-      { time: 35, title: "COMMAND POST SET UP", details: "Mobile command post operational at corner of Main & First." }
-    ];
-  
-  
+    
+    // --- FETCH DATA FROM JSON FILE ---
+    // This block replaces the hardcoded data arrays
+    let initialFeedData = [];
+    let newEvents = [];
+
+    try {
+        const response = await fetch('feed-data.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        
+        // Sort the initial feed data after fetching it
+        initialFeedData = data.initialFeed.sort((a, b) => b.time - a.time);
+        newEvents = data.newEvents;
+
+    } catch (error) {
+        console.error("Could not fetch feed data:", error);
+        // Display an error to the user in the feed
+        document.getElementById('feed-body').innerHTML = 
+            `<p style="color: #ff453a;">Error: Could not load incident data.</p>`;
+        return; // Stop execution if data fails to load
+    }
+
     // --- DOM ELEMENTS ---
     const timerElement = document.getElementById('timer-text');
     const startTimeElement = document.getElementById('start-time-text');
@@ -93,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
       timerElement.textContent = formatTime(Date.now() - startTime.getTime());
     }, 1000);
   
-    // Initial Timeline Render
+    // Initial Timeline Render (now that data is fetched)
     renderFeed(initialFeedData);
   
     // Simulate Live Feed Updates
@@ -111,8 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const userQuery = chatInput.value.trim();
       if (!userQuery) return;
       
-      // For demonstration, we'll just show the user's query and a canned response
-      // In a real app, you would send this to a server
       addChatMessage(`User: ${userQuery}`, 'user');
       chatInput.value = '';
   
@@ -120,4 +129,4 @@ document.addEventListener('DOMContentLoaded', () => {
         addChatMessage('Acknowledged. Searching protocols for your query...');
       }, 1000);
     });
-  });
+});
