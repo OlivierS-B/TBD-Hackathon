@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         casesContainer.innerHTML = filteredCases.map(c => `
-            <div class="case-row" data-status="${c.status}" data-id="${c.id}" ${c.url ? `data-url="${c.url}"` : ''}>
+            <div class="case-row" data-status="${c.status}" data-id="${c.id}">
                 <div>
                     <span class="case-type type-${c.category}">${c.type}</span>
                     <br><small>${c.id}</small>
@@ -126,14 +126,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    // --- MODIFIED CLICK LISTENER ---
     casesContainer.addEventListener('click', (e) => {
         if (e.target.tagName === 'SELECT') {
             e.stopPropagation();
             return;
         }
         const row = e.target.closest('.case-row');
-        if (row && row.dataset.url) {
-            window.location.href = row.dataset.url;
+        // Navigate to a generic page with the ID as a parameter
+        if (row && row.dataset.id) {
+            window.location.href = `incident.html?id=${row.dataset.id}`;
         }
     });
 

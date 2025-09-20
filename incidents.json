@@ -1,10 +1,60 @@
 {
   "dashboardCases": [
-    { "id": "001-2024", "type": "SHOOT", "category": "shooting", "description": "Multiple shots fired - Downtown District", "location": "123 Main Street, Units dispatched", "status": "active", "priority": "High", "timeOffsetMinutes": 2, "url": "shooting.html" },
-    { "id": "003-2024", "type": "ROB", "category": "robbery", "description": "Bank Robbery - First National", "location": "456 Bank Ave, Suspect fled scene", "status": "pending", "priority": "High", "timeOffsetMinutes": 5, "url": "robbery.html" },
-    { "id": "005-2024", "type": "DOM", "category": "domestic", "description": "Domestic disturbance - Residential", "location": "789 Oak Street, Wellness check requested", "status": "active", "priority": "Medium", "timeOffsetMinutes": 8, "url": "domestic.html" },
-    { "id": "002-2024", "type": "SHOOT", "category": "shooting", "description": "Single gunshot reported - Industrial Area", "location": "321 Factory Rd, Investigating", "status": "pending", "priority": "Medium", "timeOffsetMinutes": 15 },
-    { "id": "004-2024", "type": "ROB", "category": "robbery", "description": "Convenience Store - Suspect apprehended", "location": "654 Store Lane, Case closed", "status": "resolved", "priority": "Low", "timeOffsetMinutes": 60 }
+    { 
+      "id": "001-2024", 
+      "type": "SHOOT", 
+      "category": "shooting", 
+      "description": "Multiple shots fired - Downtown District", 
+      "location": "123 Main Street, Units dispatched", 
+      "status": "active", 
+      "priority": "High", 
+      "timeOffsetMinutes": 2,
+      "videoUrl": "https://www.youtube.com/embed/qHW8srS0ylo?autoplay=1&mute=1&controls=0&loop=1&playlist=qHW8srS0ylo"
+    },
+    { 
+      "id": "003-2024", 
+      "type": "ROB", 
+      "category": "robbery", 
+      "description": "Bank Robbery - First National", 
+      "location": "456 Bank Ave, Suspect fled scene", 
+      "status": "pending", 
+      "priority": "High", 
+      "timeOffsetMinutes": 5,
+      "videoUrl": "https://www.youtube.com/embed/rE1oIh_wS_o?autoplay=1&mute=1&controls=0&loop=1&playlist=rE1oIh_wS_o"
+    },
+    { 
+      "id": "005-2024", 
+      "type": "DOM", 
+      "category": "domestic", 
+      "description": "Domestic disturbance - Residential", 
+      "location": "789 Oak Street, Wellness check requested", 
+      "status": "active", 
+      "priority": "Medium", 
+      "timeOffsetMinutes": 8,
+      "videoUrl": "https://www.youtube.com/embed/mRe-5145yv4?autoplay=1&mute=1&controls=0&loop=1&playlist=mRe-5145yv4"
+    },
+    { 
+      "id": "002-2024", 
+      "type": "SHOOT", 
+      "category": "shooting", 
+      "description": "Single gunshot reported - Industrial Area", 
+      "location": "321 Factory Rd, Investigating", 
+      "status": "pending", 
+      "priority": "Medium", 
+      "timeOffsetMinutes": 15,
+      "videoUrl": "https://www.youtube.com/embed/qHW8srS0ylo?autoplay=1&mute=1&controls=0&loop=1&playlist=qHW8srS0ylo"
+    },
+    { 
+      "id": "004-2024", 
+      "type": "ROB", 
+      "category": "robbery", 
+      "description": "Convenience Store - Suspect apprehended", 
+      "location": "654 Store Lane, Case closed", 
+      "status": "resolved", 
+      "priority": "Low", 
+      "timeOffsetMinutes": 60,
+      "videoUrl": "https://www.youtube.com/embed/rE1oIh_wS_o?autoplay=1&mute=1&controls=0&loop=1&playlist=rE1oIh_wS_o"
+    }
   ],
   "shooting": {
     "initialFeed": [
