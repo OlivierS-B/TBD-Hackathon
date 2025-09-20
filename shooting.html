@@ -5,279 +5,365 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Emergency Response Center</title>
   <style>
+    /* --- General & Variables --- */
+    :root {
+      --timeline-color: #ef4444; /* red-500 */
+      --primary-blue: #2563eb;
+      --primary-blue-hover: #1d4ed8;
+      --success-green: #22c55e;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       background: #f3f4f6;
       height: 100vh;
       display: flex;
       flex-direction: column;
+      color: #1f2937;
     }
 
-    /* Header */
+    /* --- Header --- */
     header {
       background: #1f2937;
       color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 24px;
+      padding: 1rem 1.5rem;
       border-bottom: 1px solid #374151;
+      flex-shrink: 0;
     }
+
     header h1 {
-      font-size: 18px;
+      font-size: 1.125rem;
       font-weight: bold;
+      margin: 0;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 0.75rem;
     }
+
     .badge {
       display: flex;
       align-items: center;
-      background: #22c55e;
+      background: var(--success-green);
       color: white;
-      padding: 6px 12px;
+      padding: 0.375rem 0.75rem;
       border-radius: 9999px;
-      font-size: 13px;
+      font-size: 0.875rem;
       font-weight: 500;
       animation: pulse 1.5s infinite;
     }
+
     @keyframes pulse {
-      0%, 100% { opacity: 0.6; }
+      0%, 100% { opacity: 0.7; }
       50% { opacity: 1; }
     }
 
-    /* Layout */
+    /* --- Layout --- */
     .container {
       display: flex;
       flex: 1;
-      height: 100%;
+      overflow: hidden; /* Prevent container from overflowing */
     }
 
-    /* Sidebar */
+    /* --- Sidebar --- */
     aside {
       width: 360px;
       background: #fff;
       border-right: 1px solid #e5e7eb;
       overflow-y: auto;
-      padding: 24px;
+      padding: 1.5rem;
       box-shadow: 2px 0 6px rgba(0,0,0,0.05);
     }
 
     .card {
       background: #fff;
       border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      margin-bottom: 20px;
+      border-radius: 0.5rem;
+      margin-bottom: 1.25rem;
       overflow: hidden;
     }
 
     .card-header {
-      padding: 14px 16px;
-      font-weight: bold;
-      font-size: 15px;
+      padding: 0.875rem 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
       border-bottom: 1px solid #e5e7eb;
       cursor: pointer;
       background: #fafafa;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      user-select: none;
     }
-    .card-header span {
-      font-size: 14px;
-      color: #666;
+
+    .card-header .toggle-icon {
+      font-size: 0.875rem;
+      color: #6b7280;
       transition: transform 0.3s;
     }
-    .card-header[aria-expanded="true"] span {
-      transform: rotate(180deg);
+
+    .card-header[aria-expanded="false"] .toggle-icon {
+      transform: rotate(-90deg);
     }
+
     .card-content {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.3s ease;
-      padding: 0 16px;
+      transition: max-height 0.35s ease-in-out;
+      padding: 0 1rem;
     }
+
+    .card-content.is-open {
+      max-height: 500px; /* Set a reasonable max-height */
+    }
+
     .card-content-inner {
-      padding: 12px 0 16px;
+      padding: 0.75rem 0 1rem;
+    }
+    
+    /* Utility classes to replace inline styles */
+    .video-placeholder {
+      background: #000;
+      color: #fff;
+      padding: 40px;
+      text-align: center;
+      border-radius: 0.5rem;
+    }
+
+    .map-iframe {
+      border: 0;
+      border-radius: 0.375rem;
+      width: 100%;
+      height: 200px;
+    }
+
+    .timer-display {
+      text-align: center;
+    }
+    .timer-text {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: var(--timeline-color);
+      font-family: monospace;
+    }
+    .timer-subtext {
+      font-size: 0.75rem;
+      color: #6b7280;
     }
 
     textarea {
       width: 100%;
       height: 100px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-      resize: none;
+      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      resize: vertical;
     }
 
-    .assistant {
-      font-size: 13px;
-      color: #555;
+    .assistant-message {
+      font-size: 0.875rem;
+      color: #4b5563;
       background: #f3f4f6;
       border: 1px solid #e5e7eb;
-      padding: 10px;
-      border-radius: 6px;
-      margin: 12px 16px;
+      padding: 0.75rem;
+      border-radius: 0.375rem;
+      margin: 0.75rem 1rem;
+    }
+    
+    #chat-history {
+        max-height: 200px;
+        overflow-y: auto;
     }
 
     .chat-input {
       display: flex;
-      gap: 8px;
-      padding: 0 16px 16px;
-    }
-    .chat-input input {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    .chat-input button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 14px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .chat-input button:hover {
-      background: #1d4ed8;
+      gap: 0.5rem;
+      padding: 0 1rem 1rem;
     }
 
-    /* Right Panel */
+    .chat-input input {
+      flex: 1;
+      padding: 0.625rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+    }
+
+    .chat-input button {
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      border-radius: 0.375rem;
+      padding: 0.625rem 0.875rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+
+    .chat-input button:hover {
+      background: var(--primary-blue-hover);
+    }
+
+    /* --- Right Panel / Main Feed --- */
     main {
       flex: 1;
-      padding: 24px;
+      padding: 1.5rem;
       display: flex;
       flex-direction: column;
+      background-color: #111827; /* Dark background for contrast */
     }
+
     .feed-panel {
       flex: 1;
-      background: #111;
-      border-radius: 8px;
+      background: #1f2937;
+      border-radius: 0.5rem;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
+
     .feed-header {
-      border-bottom: 1px solid #333;
-      padding: 20px;
+      border-bottom: 1px solid #374151;
+      padding: 1.25rem;
+      flex-shrink: 0;
     }
+
     .feed-header h2 {
-      font-size: 18px;
+      font-size: 1.125rem;
       font-weight: bold;
-      margin: 0 0 6px;
+      margin: 0 0 0.375rem;
       color: #fff;
     }
+
     .feed-header p {
-      font-size: 13px;
-      color: #aaa;
+      font-size: 0.875rem;
+      color: #9ca3af;
       margin: 0;
     }
+
     .feed-body {
       flex: 1;
-      padding: 24px;
+      padding: 1.5rem;
       overflow-y: auto;
       position: relative;
     }
+
     .feed-body::before {
       content: "";
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 28px;
+      left: calc(1.5rem + 7px); /* Align with dot center */
       width: 2px;
-      background: red;
+      background: var(--timeline-color);
     }
+
     .timeline-item {
       position: relative;
       display: flex;
       align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 32px;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      animation: fadeIn 0.5s ease-out;
     }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
     .timeline-dot {
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
-      background: red;
+      background: var(--timeline-color);
+      border: 2px solid #1f2937;
       position: relative;
-      margin-left: 20px;
       flex-shrink: 0;
+      z-index: 1;
     }
-    .timeline-content {
-      flex: 1;
+    
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
     }
+
     .timeline-content h4 {
-      margin: 0 0 4px;
+      margin: 0;
       color: #fff;
-      font-size: 14px;
+      font-size: 0.9rem;
       font-weight: bold;
     }
-    .timeline-content span {
-      font-size: 11px;
-      color: #aaa;
+
+    .timeline-content .timestamp {
+      font-size: 0.75rem;
+      color: #9ca3af;
       font-family: monospace;
     }
+
     .timeline-content p {
-      margin: 4px 0 0;
-      color: #ccc;
-      font-size: 12px;
+      margin: 0;
+      color: #d1d5db;
+      font-size: 0.8rem;
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
   <header>
     <h1>🛡️ Emergency Response Center</h1>
     <div class="badge">Live Feed</div>
   </header>
 
   <div class="container">
-    <!-- Sidebar -->
     <aside>
       <div class="card">
         <div class="card-header" data-target="video" aria-expanded="true">
-          📹 Live Video <span>▼</span>
+          📹 Live Video <span class="toggle-icon">▼</span>
         </div>
-        <div class="card-content" id="video" style="max-height:300px;">
+        <div class="card-content is-open" id="video">
           <div class="card-content-inner">
-            <div style="background:#000;color:#fff;padding:40px;text-align:center;border-radius:8px;">
-              Video Stream Connecting...
-            </div>
+            <div class="video-placeholder">Video Stream Connecting...</div>
           </div>
         </div>
       </div>
 
       <div class="card">
         <div class="card-header" data-target="location" aria-expanded="true">
-          📍 Location: Owens Art Centre <span>▼</span>
+          📍 Location: Owens Art Centre <span class="toggle-icon">▼</span>
         </div>
-        <div class="card-content" id="location" style="max-height:250px;">
+        <div class="card-content is-open" id="location">
           <div class="card-content-inner">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18..."
-              width="100%" height="200" style="border:0;border-radius:6px;" allowfullscreen></iframe>
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2793.0763138856247!2d-64.36881262283994!3d45.87114880798604!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4b5f5c9e292027b1%3A0x6b5a761a52fc991!2sOwens%20Art%20Gallery!5e0!3m2!1sen!2sca!4v1726850020120!5m2!1sen!2sca"
+              class="map-iframe" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
         </div>
       </div>
 
       <div class="card">
         <div class="card-header" data-target="timer" aria-expanded="true">
-          ⏱ Time Since Reported <span>▼</span>
+          ⏱ Time Since Reported <span class="toggle-icon">▼</span>
         </div>
-        <div class="card-content" id="timer" style="max-height:120px;">
-          <div class="card-content-inner" style="text-align:center;">
-            <div id="timer-text" style="font-weight:bold;font-size:20px;color:red;font-family:monospace;">00:00:00</div>
-            <div style="font-size:12px;color:#666;">Incident Start Time: now</div>
+        <div class="card-content is-open" id="timer">
+          <div class="card-content-inner timer-display">
+            <div id="timer-text" class="timer-text">00:00:00</div>
+            <div id="start-time-text" class="timer-subtext">Incident Start Time: ...</div>
           </div>
         </div>
       </div>
 
       <div class="card">
         <div class="card-header" data-target="situation" aria-expanded="true">
-          ⚠️ Situation <span>▼</span>
+          ⚠️ Situation <span class="toggle-icon">▼</span>
         </div>
-        <div class="card-content" id="situation" style="max-height:200px;">
+        <div class="card-content is-open" id="situation">
           <div class="card-content-inner">
             <textarea placeholder="Describe the current situation..."></textarea>
           </div>
@@ -286,100 +372,153 @@
 
       <div class="card">
         <div class="card-header">💬 AI Assistant</div>
-        <div class="assistant">
-          Emergency response system ready. How can I assist with this incident?
+        <div id="chat-history">
+            <div class="assistant-message">
+              Emergency response system ready. How can I assist with this incident?
+            </div>
         </div>
-        <div class="chat-input">
-          <input type="text" placeholder="Type your question here...">
-          <button>Send</button>
-        </div>
+        <form class="chat-input" id="chat-form">
+          <input type="text" id="chat-input-field" placeholder="Ask for protocols, resources..." autocomplete="off">
+          <button type="submit">Send</button>
+        </form>
       </div>
     </aside>
 
-    <!-- Main Feed -->
     <main>
       <div class="feed-panel">
         <div class="feed-header">
-          <h2>LIVE REPORTED FEED</h2>
+          <h2>LIVE INCIDENT FEED</h2>
           <p>Real-time activity updates from the incident scene</p>
         </div>
-        <div class="feed-body">
-          <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <h4>SUSPECT LEFT SEEN</h4><span>00:00:04</span>
-              </div>
-              <p>Individual matching description spotted leaving north entrance</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <h4>SECURITY ALERT TRIGGERED</h4><span>00:00:02</span>
-              </div>
-              <p>Motion sensors activated in Gallery Wing B</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <h4>INITIAL REPORT RECEIVED</h4><span>00:00:00</span>
-              </div>
-              <p>Security staff reported suspicious activity in main gallery</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <h4>BACKUP UNITS DISPATCHED</h4><span>00:00:01</span>
-              </div>
-              <p>Additional patrol units en route to scene</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <h4>WITNESS STATEMENT RECEIVED</h4><span>00:00:03</span>
-              </div>
-              <p>Visitor provided description of individual seen near exit</p>
-            </div>
-          </div>
-        </div>
+        <div class="feed-body" id="feed-body"></div>
       </div>
     </main>
   </div>
 
   <script>
-    // Toggle collapse
-    document.querySelectorAll('.card-header[data-target]').forEach(header => {
-      header.addEventListener('click', () => {
-        const id = header.getAttribute('data-target');
-        const content = document.getElementById(id);
-        const expanded = header.getAttribute('aria-expanded') === 'true';
-        if (expanded) {
-          content.style.maxHeight = "0px";
-        } else {
-          content.style.maxHeight = content.scrollHeight + "px";
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // --- STATE & DATA ---
+      const startTime = new Date();
+      const initialFeedData = [
+        { time: 2, title: "SECURITY ALERT TRIGGERED", details: "Motion sensors activated in Gallery Wing B." },
+        { time: 4, title: "SUSPECT LEFT SCENE", details: "Individual matching description spotted leaving north entrance." },
+        { time: 1, title: "BACKUP UNITS DISPATCHED", details: "Additional patrol units en route to scene." },
+        { time: 3, title: "WITNESS STATEMENT RECEIVED", details: "Visitor provided description of individual seen near exit." },
+        { time: 0, title: "INITIAL REPORT RECEIVED", details: "Security staff reported suspicious activity in main gallery." },
+      ].sort((a, b) => b.time - a.time); // Sort data chronologically descending
+
+      const newEvents = [
+        { time: 15, title: "PERIMETER ESTABLISHED", details: "Units have secured all exits and entrances." },
+        { time: 25, title: "DRONE OVERWATCH LAUNCHED", details: "Aerial surveillance is now active over the area." },
+        { time: 35, title: "COMMAND POST SET UP", details: "Mobile command post operational at corner of Main & First." }
+      ];
+
+
+      // --- DOM ELEMENTS ---
+      const timerElement = document.getElementById('timer-text');
+      const startTimeElement = document.getElementById('start-time-text');
+      const feedBody = document.getElementById('feed-body');
+      const chatForm = document.getElementById('chat-form');
+      const chatInput = document.getElementById('chat-input-field');
+      const chatHistory = document.getElementById('chat-history');
+      
+
+      // --- FUNCTIONS ---
+      
+      /** Formats elapsed milliseconds into HH:MM:SS */
+      function formatTime(ms) {
+        const totalSeconds = Math.floor(ms / 1000);
+        const h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+        const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+        const s = String(totalSeconds % 60).padStart(2, '0');
+        return `${h}:${m}:${s}`;
+      }
+
+      /** Creates an HTML element for a timeline item */
+      function createTimelineItem(item) {
+        const timestamp = formatTime(item.time * 1000);
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'timeline-item';
+        itemDiv.innerHTML = `
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <h4>${item.title}</h4>
+              <span class="timestamp">${timestamp}</span>
+            </div>
+            <p>${item.details}</p>
+          </div>
+        `;
+        return itemDiv;
+      }
+
+      /** Renders the entire feed from data */
+      function renderFeed(data) {
+        feedBody.innerHTML = ''; // Clear existing feed
+        data.forEach(item => {
+          const itemElement = createTimelineItem(item);
+          feedBody.appendChild(itemElement);
+        });
+      }
+
+      /** Adds a new message to the chat history */
+      function addChatMessage(message, sender = 'assistant') {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = sender === 'assistant' ? 'assistant-message' : 'user-message'; // You'd need to style .user-message
+        messageDiv.textContent = message;
+        chatHistory.appendChild(messageDiv);
+        chatHistory.scrollTop = chatHistory.scrollHeight; // Auto-scroll
+      }
+      
+
+      // --- EVENT LISTENERS & INITIALIZERS ---
+
+      // Accordion (Card Collapse) Toggle
+      document.querySelectorAll('.card-header[data-target]').forEach(header => {
+        header.addEventListener('click', () => {
+          const content = document.getElementById(header.dataset.target);
+          const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+          header.setAttribute('aria-expanded', !isExpanded);
+          content.classList.toggle('is-open');
+        });
+      });
+
+      // Incident Timer
+      startTimeElement.textContent = `Incident Start Time: ${startTime.toLocaleTimeString()}`;
+      setInterval(() => {
+        timerElement.textContent = formatTime(Date.now() - startTime.getTime());
+      }, 1000);
+
+      // Initial Timeline Render
+      renderFeed(initialFeedData);
+
+      // Simulate Live Feed Updates
+      setInterval(() => {
+        if (newEvents.length > 0) {
+          const nextEvent = newEvents.shift();
+          const itemElement = createTimelineItem(nextEvent);
+          feedBody.prepend(itemElement); // Add new events to the top
         }
-        header.setAttribute('aria-expanded', !expanded);
+      }, 8000); // Add a new event every 8 seconds
+
+      // AI Chat Form Submission
+      chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const userQuery = chatInput.value.trim();
+        if (!userQuery) return;
+        
+        // For demonstration, we'll just show the user's query and a canned response
+        // In a real app, you would send this to a server
+        addChatMessage(`User: ${userQuery}`, 'user');
+        chatInput.value = '';
+
+        setTimeout(() => {
+          addChatMessage('Acknowledged. Searching protocols for your query...');
+        }, 1000);
       });
     });
-
-    // Timer
-    const timerElement = document.getElementById('timer-text');
-    const startTime = Date.now();
-    setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const h = String(Math.floor(elapsed / 3600000)).padStart(2, '0');
-      const m = String(Math.floor((elapsed % 3600000) / 60000)).padStart(2, '0');
-      const s = String(Math.floor((elapsed % 60000) / 1000)).padStart(2, '0');
-      timerElement.textContent = `${h}:${m}:${s}`;
-    }, 1000);
   </script>
 </body>
 </html>
