@@ -39,19 +39,22 @@
             margin-top: 0.3rem;
         }
 
-        .sidebar {
+       .sidebar {
             background: #34495e;
-            padding: 1.5rem;
+            padding: 1rem;
             border-right: 1px solid #3498db;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
-
         .chat-section {
             background: #ecf0f1;
             border-radius: 12px;
-            padding: 1.5rem;
-            height: calc(100vh - 120px);
+            padding: 1rem;
+            flex: 1;  /* fills sidebar */
             display: flex;
             flex-direction: column;
+            min-height: 0; /* important for flex scrolling */
         }
 
         .chat-title {
@@ -68,8 +71,9 @@
             border-radius: 10px;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
             background: white;
+            overflow: hidden;
+            min-height: 0;
         }
 
         .chat-messages {
@@ -79,12 +83,11 @@
             background: #f8f9fa;
         }
 
-        .message {
-            margin-bottom: 0.8rem;
-            padding: 0.6rem 1rem;
-            border-radius: 10px;
-            max-width: 90%;
-            font-size: 0.9rem;
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background: #f8f9fa;
         }
 
         .user-message {
@@ -106,6 +109,7 @@
             background: white;
             display: flex;
             gap: 0.5rem;
+            flex-shrink: 0;   /* prevents squishing */
         }
 
         .chat-input {
@@ -115,6 +119,7 @@
             border-radius: 5px;
             outline: none;
             font-size: 0.9rem;
+            min-width: 0;  /* ensures proper shrinking inside flex */
         }
 
         .send-btn {
@@ -125,6 +130,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 0.9rem;
+            flex-shrink: 0;   /* keep button from disappearing */
         }
 
         .main-content {
