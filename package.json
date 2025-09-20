@@ -1,22 +1,21 @@
 {
-    "name": "login-system",
-    "version": "1.0.0",
-    "description": "A simple login and registration system backend.",
-    "main": "server.js",
-    "scripts": {
-      "start": "node server.js"
-    },
-    "keywords": [
-      "node.js",
-      "express",
-      "login",
-      "registration"
-    ],
-    "author": "Your Name",
-    "license": "ISC",
-    "dependencies": {
-      "bcryptjs": "^3.0.2",
-      "express": "^4.18.2"
-    }
+  "name": "login-system",
+  "version": "1.0.0",
+  "description": "A simple login and registration system backend.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "node.js",
+    "express",
+    "login",
+    "registration"
+  ],
+  "author": "Your Name",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "express": "^4.18.2"
   }
-  
+}
