@@ -3,28 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Sign Up</title>
+    <title>Crisis Watch - Login</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body id="login-page">
-    <div class="container">
-        <h1>Crisis Watch</h1>
+
+    <div class="form-container" id="login-container">
+        <h2>Login</h2>
         <form id="login-form">
-            <h2>Login</h2>
             <div class="input-group">
                 <label for="login-email">Email</label>
-                <input type="email" id="login-email" required>
+                <input type="email" id="login-email">
             </div>
             <div class="input-group">
                 <label for="login-password">Password</label>
-                <input type="password" id="login-password" required>
+                <input type="password" id="login-password">
             </div>
-            <button onclick="window.location.href='./landingpage.html'">Login</button>
-            <p>Don't have an account? <a href="#" id="show-signup">Create one!</a></p>
+            <button type="submit">Login</button>
         </form>
+        <p style="margin-top: 1.5rem; font-size: 0.9rem;">
+            Don't have an account? <a href="#" id="show-signup-link" style="color: var(--system-blue); font-weight: 600;">Create one!</a>
+        </p>
+    </div>
 
-        <form id="signup-form" class="hidden">
-            <h2>Create Account</h2>
+    <div class="form-container" id="signup-container" style="display: none;">
+        <h2>Create Account</h2>
+        <form id="signup-form">
             <div class="input-group">
                 <label for="signup-email">Email</label>
                 <input type="email" id="signup-email" required>
@@ -33,13 +37,46 @@
                 <label for="signup-password">Password</label>
                 <input type="password" id="signup-password" required>
             </div>
-            <button type="submit">
-                Sign Up</button>
-            <p>Already have an account? <a href="#" id="show-login">Login here!</a></p>
+            <button type="submit">Sign Up</button>
         </form>
-
-        <div id="message" class="message"></div>
+        <p style="margin-top: 1.5rem; font-size: 0.9rem;">
+            Already have an account? <a href="#" id="show-login-link" style="color: var(--system-blue); font-weight: 600;">Login here!</a>
+        </p>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginContainer = document.getElementById('login-container');
+            const signupContainer = document.getElementById('signup-container');
+            
+            const showSignupLink = document.getElementById('show-signup-link');
+            const showLoginLink = document.getElementById('show-login-link');
+            
+            const loginForm = document.getElementById('login-form');
+
+            // When "Create one!" is clicked...
+            showSignupLink.addEventListener('click', (e) => {
+                e.preventDefault(); 
+                loginContainer.style.display = 'none'; 
+                signupContainer.style.display = 'block'; 
+            });
+
+            // When "Login here!" is clicked...
+            showLoginLink.addEventListener('click', (e) => {
+                e.preventDefault(); 
+                signupContainer.style.display = 'none'; 
+                loginContainer.style.display = 'block'; 
+            });
+
+            // --- FOR TESTING ---
+            // When the login form is submitted (button clicked or enter pressed)...
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault(); // Stop the form from submitting normally
+                window.location.href = 'landingpage.html'; // Redirect to the dashboard
+            });
+            // -------------------
+        });
+    </script>
+
 </body>
 </html>
