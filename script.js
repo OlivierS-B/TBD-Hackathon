@@ -38,10 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (response.ok) {
-                displayMessage(data.msg, 'success');
+                displayMessage('Login successful. Redirecting...', 'success');
+                window.location.href = '/landingpage.html';
             } else {
                 displayMessage(data.msg || 'Login failed.', 'error');
             }
+            
         } catch (error) {
             console.error('Login error:', error);
             displayMessage('An error occurred. Please try again.', 'error');
