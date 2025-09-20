@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Renders the list of cases into the DOM based on the current filter.
+     * MODIFIED: Replaced static spans for status and priority with <select> dropdowns.
      */
     const renderCases = () => {
         // Filter the data first, don't hide DOM elements
@@ -71,8 +72,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     <strong>${c.description}</strong>
                     <br><small>${c.location}</small>
                 </div>
-                <div><span class="status-badge status-${c.status}">${c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span></div>
-                <div><span class="priority-${c.priority.toLowerCase()}">${c.priority}</span></div>
+                <div>
+                    <select class="status-select status-${c.status}" data-id="${c.id}">
+                        <option value="active" ${c.status === 'active' ? 'selected' : ''}>Active</option>
+                        <option value="pending" ${c.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="resolved" ${c.status === 'resolved' ? 'selected' : ''}>Resolved</option>
+                    </select>
+                </div>
+                <div>
+                     <select class="priority-select priority-${c.priority.toLowerCase()}" data-id="${c.id}">
+                        <option value="High" ${c.priority === 'High' ? 'selected' : ''}>High</option>
+                        <option value="Medium" ${c.priority === 'Medium' ? 'selected' : ''}>Medium</option>
+                        <option value="Low" ${c.priority === 'Low' ? 'selected' : ''}>Low</option>
+                    </select>
+                </div>
                 <div>${formatTimeAgo(c.timestamp)}</div>
             </div>
         `).join('');
@@ -134,11 +147,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Case row clicks - using Event Delegation
     casesContainer.addEventListener('click', (e) => {
+        // ADDED: Stop navigation if a dropdown was clicked
+        if (e.target.tagName === 'SELECT') {
+            e.stopPropagation();
+            return;
+        }
         const row = e.target.closest('.case-row');
         if (row && row.dataset.url) {
             window.location.href = row.dataset.url;
         }
     });
+
+    /**
+     * NEW: Event listener to handle changes in status or priority dropdowns.
+     */
+    casesContainer.addEventListener('change', (e) => {
+        if (e.target.tagName === 'SELECT') {
+            const caseId = e.target.dataset.id;
+            const newValue = e.target.value;
+            const caseToUpdate = caseData.find(c => c.id === caseId);
+
+            if (caseToUpdate) {
+                // Check if it's the status or priority select
+                if (e.target.classList.contains('status-select')) {
+                    caseToUpdate.status = newValue;
+                } else if (e.target.classList.contains('priority-select')) {
+                    caseToUpdate.priority = newValue;
+                }
+                
+                // Re-render everything to reflect the state change
+                updateStats();
+                renderCases();
+            }
+        }
+    });
+
 
     // --- 6. INITIALIZATION ---
     
