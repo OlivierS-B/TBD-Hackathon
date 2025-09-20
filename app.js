@@ -1,18 +1,26 @@
-// Wrap the entire script in a 'DOMContentLoaded' listener to ensure the HTML is loaded first.
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
-    // --- 1. DATA: Centralized source of truth ---
-    // In a real app, this would come from an API.
-    const caseData = [
-        { id: '001-2024', type: 'SHOOT', category: 'shooting', description: 'Multiple shots fired - Downtown District', location: '123 Main Street, Units dispatched', status: 'active', priority: 'High', timestamp: new Date(Date.now() - 2 * 60 * 1000), url: 'shooting.html' },
-        { id: '003-2024', type: 'ROB', category: 'robbery', description: 'Bank Robbery - First National', location: '456 Bank Ave, Suspect fled scene', status: 'pending', priority: 'High', timestamp: new Date(Date.now() - 5 * 60 * 1000) },
-        { id: '005-2024', type: 'DOM', category: 'domestic', description: 'Domestic disturbance - Residential', location: '789 Oak Street, Wellness check requested', status: 'active', priority: 'Medium', timestamp: new Date(Date.now() - 8 * 60 * 1000) },
-        { id: '002-2024', type: 'SHOOT', category: 'shooting', description: 'Single gunshot reported - Industrial Area', location: '321 Factory Rd, Investigating', status: 'pending', priority: 'Medium', timestamp: new Date(Date.now() - 15 * 60 * 1000) },
-        { id: '004-2024', type: 'ROB', category: 'robbery', description: 'Convenience Store - Suspect apprehended', location: '654 Store Lane, Case closed', status: 'resolved', priority: 'Low', timestamp: new Date(Date.now() - 60 * 60 * 1000) }
-    ];
+    let caseData = [];
 
-    // --- 2. CACHE DOM ELEMENTS ---
-    // Store frequently accessed elements in variables for faster access.
+    try {
+        const response = await fetch('incidents.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        
+        caseData = data.dashboardCases.map(caseItem => ({
+            ...caseItem,
+            timestamp: new Date(Date.now() - caseItem.timeOffsetMinutes * 60 * 1000)
+        }));
+
+    } catch (error) {
+        console.error("Could not fetch dashboard case data:", error);
+        document.getElementById('casesContainer').innerHTML = `Error loading case data.`;
+        return; 
+    }
+
+    // --- CACHE DOM ELEMENTS ---
     const chatForm = document.getElementById('chatForm');
     const chatInput = document.getElementById('chatInput');
     const chatMessages = document.getElementById('chatMessages');
@@ -23,16 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const pendingCountEl = document.getElementById('pendingCount');
     const resolvedCountEl = document.getElementById('resolvedCount');
     
-    // --- 3. STATE MANAGEMENT ---
+    // --- STATE MANAGEMENT ---
     let currentFilter = 'active';
 
-    // --- 4. CORE FUNCTIONS ---
-
-    /**
-     * Calculates a 'time ago' string from a date object.
-     * @param {Date} date - The timestamp to format.
-     * @returns {string} - Formatted time string (e.g., "2 min ago").
-     */
+    // --- CORE FUNCTIONS ---
     const formatTimeAgo = (date) => {
         const seconds = Math.floor((new Date() - date) / 1000);
         let interval = seconds / 31536000;
@@ -48,20 +50,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return Math.floor(seconds) + " sec ago";
     };
 
-    /**
-     * Renders the list of cases into the DOM based on the current filter.
-     * MODIFIED: Replaced static spans for status and priority with <select> dropdowns.
-     */
     const renderCases = () => {
-        // Filter the data first, don't hide DOM elements
         const filteredCases = caseData.filter(c => {
             if (currentFilter === 'all') return true;
             if (currentFilter === 'active') return c.status === 'active';
-            if (currentFilter === 'current') return true; // Placeholder for location logic
+            if (currentFilter === 'current') return true;
             return true;
         });
 
-        // Generate HTML from the data
         casesContainer.innerHTML = filteredCases.map(c => `
             <div class="case-row" data-status="${c.status}" data-id="${c.id}" ${c.url ? `data-url="${c.url}"` : ''}>
                 <div>
@@ -91,39 +87,28 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     };
     
-    /**
-     * Updates the statistic counters based on the full dataset.
-     */
     const updateStats = () => {
         activeCountEl.textContent = caseData.filter(c => c.status === 'active').length;
         pendingCountEl.textContent = caseData.filter(c => c.status === 'pending').length;
         resolvedCountEl.textContent = caseData.filter(c => c.status === 'resolved').length;
     };
     
-    /**
-     * Adds a message to the chat UI.
-     * @param {string} text - The message content.
-     * @param {string} sender - 'user' or 'bot'.
-     */
     const addChatMessage = (text, sender) => {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message`;
         messageDiv.textContent = text;
         chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
+        chatMessages.scrollTop = chatMessages.scrollHeight; 
     };
 
-    // --- 5. EVENT LISTENERS ---
-
-    // Chat functionality
+    // --- EVENT LISTENERS ---
     chatForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // Prevent page reload on form submission
+        e.preventDefault();
         const message = chatInput.value.trim();
         if (message) {
             addChatMessage(message, 'user');
             chatInput.value = '';
             
-            // Simulate bot response
             setTimeout(() => {
                 const responses = ["Units dispatched.", "Case logged as HIGH priority.", "Backup support en route."];
                 const randomResponse = responses[Math.floor(Math.random() * responses.length)];
@@ -132,22 +117,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Filtering controls - using Event Delegation
     filterControls.addEventListener('click', (e) => {
         if (e.target.tagName === 'BUTTON') {
-            // Remove active class from all buttons
             filterControls.querySelector('.active').classList.remove('active');
-            // Add active class to the clicked button
             e.target.classList.add('active');
-            // Update state and re-render
             currentFilter = e.target.dataset.filter;
             renderCases();
         }
     });
 
-    // Case row clicks - using Event Delegation
     casesContainer.addEventListener('click', (e) => {
-        // ADDED: Stop navigation if a dropdown was clicked
         if (e.target.tagName === 'SELECT') {
             e.stopPropagation();
             return;
@@ -158,9 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /**
-     * NEW: Event listener to handle changes in status or priority dropdowns.
-     */
     casesContainer.addEventListener('change', (e) => {
         if (e.target.tagName === 'SELECT') {
             const caseId = e.target.dataset.id;
@@ -168,27 +144,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const caseToUpdate = caseData.find(c => c.id === caseId);
 
             if (caseToUpdate) {
-                // Check if it's the status or priority select
                 if (e.target.classList.contains('status-select')) {
                     caseToUpdate.status = newValue;
                 } else if (e.target.classList.contains('priority-select')) {
                     caseToUpdate.priority = newValue;
                 }
                 
-                // Re-render everything to reflect the state change
                 updateStats();
                 renderCases();
             }
         }
     });
 
-
-    // --- 6. INITIALIZATION ---
-    
-    // Initial render of cases and stats
+    // --- INITIALIZATION ---
     renderCases();
     updateStats();
     
-    // Periodically update the time-ago strings
-    setInterval(renderCases, 30000); // Re-render every 30 seconds for fresh timestamps
+    setInterval(renderCases, 30000);
 });

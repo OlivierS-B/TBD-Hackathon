@@ -1,31 +1,53 @@
 {
-    "shooting": {
-      "initialFeed": [
-        { "time": 2, "title": "SECURITY ALERT TRIGGERED", "details": "Motion sensors activated in Gallery Wing B." },
-        { "time": 4, "title": "SUSPECT LEFT SCENE", "details": "Individual matching description spotted leaving north entrance." },
-        { "time": 1, "title": "BACKUP UNITS DISPATCHED", "details": "Additional patrol units en route to scene." },
-        { "time": 3, "title": "WITNESS STATEMENT RECEIVED", "details": "Visitor provided description of individual seen near exit." },
-        { "time": 0, "title": "INITIAL REPORT RECEIVED", "details": "Security staff reported suspicious activity in main gallery." }
-      ],
-      "newEvents": [
-        { "time": 15, "title": "PERIMETER ESTABLISHED", "details": "Units have secured all exits and entrances." },
-        { "time": 25, "title": "DRONE OVERWATCH LAUNCHED", "details": "Aerial surveillance is now active over the area." },
-        { "time": 35, "title": "COMMAND POST SET UP", "details": "Mobile command post operational at corner of Main & First." }
-      ]
-    },
-    "domestic": {
-      "initialFeed": [
-        { "time": 0, "title": "911 CALL RECEIVED", "details": "Caller reported loud shouting and items being thrown in a neighboring residence." },
-        { "time": 2, "title": "PATROL UNIT DISPATCHED", "details": "Unit 12B en route to 123 Maple Avenue, University Park." },
-        { "time": 6, "title": "UNIT ARRIVED ON SCENE", "details": "Unit 12B is on site. Reports no audible signs of distress from the exterior." },
-        { "time": 8, "title": "CONTACT MADE WITH RESIDENTS", "details": "Officers are inside speaking with the parties involved." },
-        { "time": 11, "title": "SITUATION APPEARS STABLE", "details": "No signs of physical altercation. Officers report the verbal argument has ceased." }
-      ],
-      "newEvents": [
-        { "time": 20, "title": "MEDIATION IN PROGRESS", "details": "Officers are mediating a resolution between both individuals." },
-        { "time": 35, "title": "SEPARATION PLAN AGREED", "details": "One party has voluntarily agreed to stay with a relative for the night." },
-        { "time": 45, "title": "RESOURCES PROVIDED", "details": "Officers provided both parties with domestic violence resource pamphlets." },
-        { "time": 55, "title": "UNIT CLEAR FROM SCENE", "details": "Unit 12B has cleared the scene. Situation resolved without arrest." }
-      ]
-    }
+  "dashboardCases": [
+    { "id": "001-2024", "type": "SHOOT", "category": "shooting", "description": "Multiple shots fired - Downtown District", "location": "123 Main Street, Units dispatched", "status": "active", "priority": "High", "timeOffsetMinutes": 2, "url": "shooting.html" },
+    { "id": "003-2024", "type": "ROB", "category": "robbery", "description": "Bank Robbery - First National", "location": "456 Bank Ave, Suspect fled scene", "status": "pending", "priority": "High", "timeOffsetMinutes": 5, "url": "robbery.html" },
+    { "id": "005-2024", "type": "DOM", "category": "domestic", "description": "Domestic disturbance - Residential", "location": "789 Oak Street, Wellness check requested", "status": "active", "priority": "Medium", "timeOffsetMinutes": 8, "url": "domestic.html" },
+    { "id": "002-2024", "type": "SHOOT", "category": "shooting", "description": "Single gunshot reported - Industrial Area", "location": "321 Factory Rd, Investigating", "status": "pending", "priority": "Medium", "timeOffsetMinutes": 15 },
+    { "id": "004-2024", "type": "ROB", "category": "robbery", "description": "Convenience Store - Suspect apprehended", "location": "654 Store Lane, Case closed", "status": "resolved", "priority": "Low", "timeOffsetMinutes": 60 }
+  ],
+  "shooting": {
+    "initialFeed": [
+      { "time": 2, "title": "SECURITY ALERT TRIGGERED", "details": "Motion sensors activated in Gallery Wing B." },
+      { "time": 4, "title": "SUSPECT LEFT SCENE", "details": "Individual matching description spotted leaving north entrance." },
+      { "time": 1, "title": "BACKUP UNITS DISPATCHED", "details": "Additional patrol units en route to scene." },
+      { "time": 3, "title": "WITNESS STATEMENT RECEIVED", "details": "Visitor provided description of individual seen near exit." },
+      { "time": 0, "title": "INITIAL REPORT RECEIVED", "details": "Security staff reported suspicious activity in main gallery." }
+    ],
+    "newEvents": [
+      { "time": 15, "title": "PERIMETER ESTABLISHED", "details": "Units have secured all exits and entrances." },
+      { "time": 25, "title": "DRONE OVERWATCH LAUNCHED", "details": "Aerial surveillance is now active over the area." },
+      { "time": 35, "title": "COMMAND POST SET UP", "details": "Mobile command post operational at corner of Main & First." }
+    ]
+  },
+  "domestic": {
+    "initialFeed": [
+      { "time": 0, "title": "911 CALL RECEIVED", "details": "Caller reported loud shouting and items being thrown in a neighboring residence." },
+      { "time": 2, "title": "PATROL UNIT DISPATCHED", "details": "Unit 12B en route to 123 Maple Avenue, University Park." },
+      { "time": 6, "title": "UNIT ARRIVED ON SCENE", "details": "Unit 12B is on site. Reports no audible signs of distress from the exterior." },
+      { "time": 8, "title": "CONTACT MADE WITH RESIDENTS", "details": "Officers are inside speaking with the parties involved." },
+      { "time": 11, "title": "SITUATION APPEARS STABLE", "details": "No signs of physical altercation. Officers report the verbal argument has ceased." }
+    ],
+    "newEvents": [
+      { "time": 20, "title": "MEDIATION IN PROGRESS", "details": "Officers are mediating a resolution between both individuals." },
+      { "time": 35, "title": "SEPARATION PLAN AGREED", "details": "One party has voluntarily agreed to stay with a relative for the night." },
+      { "time": 45, "title": "RESOURCES PROVIDED", "details": "Officers provided both parties with domestic violence resource pamphlets." },
+      { "time": 55, "title": "UNIT CLEAR FROM SCENE", "details": "Unit 12B has cleared the scene. Situation resolved without arrest." }
+    ]
+  },
+  "robbery": {
+    "initialFeed": [
+      { "time": 0, "title": "SILENT ALARM TRIGGERED", "details": "Panic button activated at First National Bank, teller station 3." },
+      { "time": 1, "title": "ALL AVAILABLE UNITS DISPATCHED", "details": "Multiple units responding to a 211 in progress." },
+      { "time": 3, "title": "FIRST UNIT ON SCENE", "details": "Unit 24 reports arrival, establishing perimeter around the bank." },
+      { "time": 5, "title": "SUSPECT DESCRIPTION BROADCAST", "details": "Suspect is male, 5'10\", wearing a black hoodie, fled on foot northbound." },
+      { "time": 8, "title": "AERIAL SUPPORT REQUESTED", "details": "Air-1 requested for city-wide search of the downtown area." }
+    ],
+    "newEvents": [
+      { "time": 15, "title": "WITNESSES BEING INTERVIEWED", "details": "Detectives are on scene gathering statements from employees and customers." },
+      { "time": 25, "title": "SURVEILLANCE FOOTAGE OBTAINED", "details": "Bank has provided internal and external video footage to investigators." },
+      { "time": 40, "title": "SUSPECT VEHICLE IDENTIFIED", "details": "Witness reported suspect entering a blue sedan, license plate partial 'TX-L5...'" },
+      { "time": 60, "title": "ALL-POINTS BULLETIN ISSUED", "details": "APB issued for suspect and vehicle to all surrounding law enforcement agencies." }
+    ]
   }
+}
