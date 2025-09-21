@@ -1,91 +1,93 @@
+// server.js
+
 const express = require('express');
-const bcrypt = require('bcryptjs');
-const fs = require('fs');
+const OpenAI = require('openai');
+const cors = require('cors');
+const fs = require('fs').promises;
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-const USERS_FILE = path.join(__dirname, 'users.json');
+const port = 3000;
 
-// Middleware to parse JSON bodies and serve static files
+// --- Setup OpenAI Client ---
+if (!process.env.OPENAI_API_KEY) {
+    console.error('FATAL ERROR: OPENAI_API_KEY is not defined in your .env file.');
+    process.exit(1);
+}
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
+
+// --- Middleware ---
+app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// --- Helper Functions for File-based DB ---
-const getUsers = () => {
-    try {
-        // Create an empty users.json file if it doesn't exist
-        if (!fs.existsSync(USERS_FILE)) {
-            fs.writeFileSync(USERS_FILE, '[]');
-        }
-        const usersData = fs.readFileSync(USERS_FILE, 'utf8');
-        return JSON.parse(usersData);
-    } catch (error) {
-        console.error('Failed to read or parse users.json:', error);
-        return [];
-    }
-};
+// --- Path Configuration ---
+// This assumes server.js is at /Users/Olivier/Desktop/TBD-Hackathon/server.js
+// We get the directory name and use it as the project root.
+const projectRoot = path.dirname(__filename);
+const incidentsFilePath = path.join(projectRoot, 'incidents.json');
 
-const saveUsers = (users) => {
-    try {
-        fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
-    } catch (error) {
-        console.error('Failed to save to users.json:', error);
-    }
-};
+console.log('--- Server Path Diagnostics ---');
+console.log(`Server script is running from (__dirname): ${__dirname}`);
+console.log(`Calculated project root directory: ${projectRoot}`);
+console.log(`Attempting to read incidents.json from: ${incidentsFilePath}`);
+console.log('-------------------------------');
 
-// --- API ROUTES for Login and Registration ---
 
-// @route   POST /api/register
-// @desc    Register a new user
-app.post('/api/register', async (req, res) => {
-    const { email, password } = req.body;
+// --- Serve the Front-End Files ---
+app.use(express.static(projectRoot));
 
-    const users = getUsers();
-    const userExists = users.find(u => u.email === email);
-    if (userExists) {
-        return res.status(400).json({ msg: 'User already exists' });
+// --- The Main AI Endpoint ---
+app.post('/ask-ai', async (req, res) => {
+    const userQuery = req.body.query;
+
+    if (!userQuery) {
+        return res.status(400).json({ error: 'Query is required.' });
     }
 
     try {
-        // Hash password before saving
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = { email, password: hashedPassword };
-        users.push(newUser);
-        saveUsers(users);
+        const incidentsData = await fs.readFile(incidentsFilePath, 'utf-8');
 
-        res.status(201).json({ msg: 'User registered successfully.' });
+        const systemMessage = `You are a helpful AI assistant for an emergency response command center named "Crisis Watch AI".
+        Your task is to answer questions based ONLY on the provided JSON data about current incidents.
+        Be concise, professional, and do not provide information that isn't in the data. Do not make up information.
+        If the user asks a general question not related to the data, politely state that you can only answer questions about the incident data.
+        Today's date is ${new Date().toLocaleDateString()}.`;
+
+        const userMessage = `Here is the current incident data in JSON format:
+        ---
+        ${incidentsData}
+        ---
+        Now, please answer this user's question: "${userQuery}"`;
+
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+                { role: "system", content: systemMessage },
+                { role: "user", content: userMessage }
+            ],
+            temperature: 0.1,
+            max_tokens: 150,
+        });
+
+        const aiResponse = completion.choices[0].message.content;
+        res.json({ answer: aiResponse });
+
     } catch (error) {
-        console.error('Registration error:', error);
-        res.status(500).send('Server error');
+        console.error("Error communicating with OpenAI or reading file:", error);
+        res.status(500).json({ error: 'Failed to get a response from the AI. Check the server logs for details.' });
     }
 });
 
-// @route   POST /api/login
-// @desc    Authenticate user
-app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
-
-    const users = getUsers();
-    const user = users.find(u => u.email === email);
-    if (!user) {
-        // Obfuscate login failure to prevent username enumeration attacks
-        return res.status(400).json({ msg: 'Invalid credentials' });
-    }
-
-    try {
-        // Compare submitted password with the hashed password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (isMatch) {
-            res.json({ msg: 'Login successful' });
-        } else {
-            // Obfuscate login failure
-            res.status(400).json({ msg: 'Invalid credentials' });
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).send('Server error');
-    }
+// --- Default route to serve your main page ---
+app.get('/', (req, res) => {
+    res.sendFile(path.join(projectRoot, 'landingpage.html'));
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(port, () => {
+    console.log(`🚀 Crisis Watch Server is now live!`);
+    console.log(`➡️ Open your browser and go to: http://localhost:${port}`);
+    console.log('----------------------------------------------------');
+});

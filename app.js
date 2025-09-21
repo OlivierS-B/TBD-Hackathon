@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         return; 
     }
 
-    // --- CACHE DOM ELEMENTS ---
     const chatForm = document.getElementById('chatForm');
     const chatInput = document.getElementById('chatInput');
     const chatMessages = document.getElementById('chatMessages');
@@ -31,10 +30,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const pendingCountEl = document.getElementById('pendingCount');
     const resolvedCountEl = document.getElementById('resolvedCount');
     
-    // --- STATE MANAGEMENT ---
     let currentFilter = 'active';
 
-    // --- CORE FUNCTIONS ---
     const formatTimeAgo = (date) => {
         const seconds = Math.floor((new Date() - date) / 1000);
         let interval = seconds / 31536000;
@@ -54,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const filteredCases = caseData.filter(c => {
             if (currentFilter === 'all') return true;
             if (currentFilter === 'active') return c.status === 'active';
-            if (currentFilter === 'current') return true;
+            if (currentFilter === 'current') return true; 
             return true;
         });
 
@@ -101,19 +98,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         chatMessages.scrollTop = chatMessages.scrollHeight; 
     };
 
-    // --- EVENT LISTENERS ---
-    chatForm.addEventListener('submit', (e) => {
+    // --- UPDATED CHATFORM EVENT LISTENER ---
+    chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const message = chatInput.value.trim();
-        if (message) {
-            addChatMessage(message, 'user');
-            chatInput.value = '';
-            
-            setTimeout(() => {
-                const responses = ["Units dispatched.", "Case logged as HIGH priority.", "Backup support en route."];
-                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                addChatMessage(randomResponse, 'bot');
-            }, 1000);
+        if (!message) return;
+
+        addChatMessage(message, 'user');
+        chatInput.value = '';
+        addChatMessage("Thinking...", 'bot'); // Provide instant feedback
+
+        try {
+            const response = await fetch('http://localhost:3000/ask-ai', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: message }),
+            });
+
+            // Remove the "Thinking..." message
+            chatMessages.removeChild(chatMessages.lastChild);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `Server error: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            addChatMessage(data.answer, 'bot');
+
+        } catch (error) {
+            console.error("Error fetching AI response:", error);
+            addChatMessage(`Sorry, I encountered an error: ${error.message}`, 'bot');
         }
     });
 
@@ -126,14 +143,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // --- MODIFIED CLICK LISTENER ---
     casesContainer.addEventListener('click', (e) => {
         if (e.target.tagName === 'SELECT') {
             e.stopPropagation();
             return;
         }
         const row = e.target.closest('.case-row');
-        // Navigate to a generic page with the ID as a parameter
         if (row && row.dataset.id) {
             window.location.href = `incident.html?id=${row.dataset.id}`;
         }
@@ -158,7 +173,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // --- INITIALIZATION ---
     renderCases();
     updateStats();
     
